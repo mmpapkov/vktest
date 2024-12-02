@@ -6,38 +6,52 @@
 //
 
 import XCTest
+@testable import vktest
 
-final class vktestUITests: XCTestCase {
+final class RepositoryViewModelTests: XCTestCase {
+    var viewModel: RepositoryViewModel!
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-
-        // In UI tests it is usually best to stop immediately when a failure occurs.
-        continueAfterFailure = false
-
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
+    override func setUp() {
+        super.setUp()
+        viewModel = RepositoryViewModel()
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    override func tearDown() {
+        viewModel = nil
+        super.tearDown()
     }
 
-    @MainActor
-    func testExample() throws {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
-        app.launch()
-
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testAddLocalRepository() {
+        let repository = Repository(
+            id: 1,
+            name: "Test",
+            description: "Description",
+            owner: Owner(avatar_url: "")
+        )
+        viewModel.addLocalRepository(repository)
+        XCTAssertTrue(viewModel.localRepositories.contains(repository))
     }
 
-    @MainActor
-    func testLaunchPerformance() throws {
-        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
-            // This measures how long it takes to launch your application.
-            measure(metrics: [XCTApplicationLaunchMetric()]) {
-                XCUIApplication().launch()
-            }
-        }
+    func testRemoveLocalRepository() {
+        let repository = Repository(
+            id: 1,
+            name: "Test",
+            description: "Description",
+            owner: Owner(avatar_url: "")
+        )
+        viewModel.addLocalRepository(repository)
+        viewModel.removeLocalRepository(repository)
+        XCTAssertFalse(viewModel.localRepositories.contains(repository))
+    }
+
+    func testUpdateLocalRepository() {
+        let repository = Repository(
+            id: 1,
+            name: "Test",
+            description: "Description",
+            owner: Owner(avatar_url: "")
+        )
+        viewModel.addLocalRepository(repository)
+        XCTAssertEqual(viewModel.localRepositories.first?.name, "Updated")
     }
 }
